@@ -2,7 +2,7 @@ function alphabetizeSheetsWithPinned() {
   var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   
   // List of sheet names to pin at the top in the desired order
-  var pinnedSheets = ["Data Dictionary", "Raw Data Dictionary", "Data Model Template"];
+  var pinnedSheets = ["Pin1", "Pin2", "Pin3"];
   
   // Get all the sheets and split into pinned and others
   var sheetNames = spreadsheet.getSheets().map(sheet => sheet.getName());
