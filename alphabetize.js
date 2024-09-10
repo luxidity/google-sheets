@@ -1,40 +1,23 @@
 function alphabetizeSheetsWithPinned() {
-  // Get the active spreadsheet
   var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   
   // List of sheet names to pin at the top in the desired order
-  var pinnedSheets = ["pin1", "pin2", "pin3"];
+  var pinnedSheets = ["Data Dictionary", "Raw Data Dictionary", "Data Model Template"];
   
-  // Get all the sheets and their names
-  var sheets = spreadsheet.getSheets();
-  
-  // Create arrays for pinned and other sheets
-  var pinnedSheetNames = [];
-  var otherSheetNames = [];
+  // Get all the sheets and split into pinned and others
+  var sheetNames = spreadsheet.getSheets().map(sheet => sheet.getName());
+  var otherSheetNames = sheetNames.filter(name => !pinnedSheets.includes(name)).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
 
-  // Sort sheets into pinned and other categories
-  sheets.forEach(sheet => {
-    var name = sheet.getName();
-    if (pinnedSheets.some(pinned => name.toLowerCase().includes(pinned.toLowerCase()))) {
-      pinnedSheetNames.push(name);
-    } else {
-      otherSheetNames.push(name);
-    }
+  // Combine pinned sheets with the sorted others
+  var sortedSheetNames = pinnedSheets.concat(otherSheetNames);
+
+  // Reorder sheets based on sorted names
+  sortedSheetNames.forEach((name, index) => {
+    var sheet = spreadsheet.getSheetByName(name);
+    spreadsheet.setActiveSheet(sheet);
+    spreadsheet.moveActiveSheet(index + 1);
   });
 
-  // Sort the non-pinned sheet names alphabetically
-  otherSheetNames.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
-
-  // Combine the pinned sheets and the alphabetized sheets
-  var sortedSheetNames = [...pinnedSheetNames, ...otherSheetNames];
-
-  // Reorder the sheets based on the sorted names
-  for (var i = 0; i < sortedSheetNames.length; i++) {
-    var sheet = spreadsheet.getSheetByName(sortedSheetNames[i]);
-    spreadsheet.setActiveSheet(sheet);
-    spreadsheet.moveActiveSheet(i + 1);
-  }
-  
   // Set the first sheet as the active sheet
   spreadsheet.setActiveSheet(spreadsheet.getSheets()[0]);
 }
